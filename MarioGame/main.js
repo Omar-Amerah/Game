@@ -2,7 +2,7 @@ import Phaser from "phaser";
 
 const game = new Phaser.Game({
     type: Phaser.AUTO,
-    width: 600,
+    width: 650,
     height: 300,
     parent: "game",
     zoom: 4,
@@ -12,7 +12,7 @@ const game = new Phaser.Game({
         default: "arcade",
         arcade: {
             gravity: { y: 300 },
-            debug: true,
+            //debug: true,
         },
     },
     scene: { preload, create, update },
@@ -60,6 +60,7 @@ function create() {
 
     coin = this.physics.add.sprite(310, 70, 'idlecoin').setImmovable(true)
     coin.body.setAllowGravity(false);
+    coin.setScale(0.7)
 
     blueDino.setSize(14, 16, true)
     blueDino.setScale(1);
@@ -134,6 +135,8 @@ function create() {
 
 function update() {
 
+    score.x = blueDino.body.position.x - 290; 
+    score.y = blueDino.body.position.y - 130;
 
     if (shiftKey.isDown && cursors.right.isDown) {
         blueDino.setVelocityX(200);
