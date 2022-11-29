@@ -3,7 +3,7 @@ import Phaser from "phaser";
 
 const game = new Phaser.Game({
     type: Phaser.AUTO,
-    width: 650,
+    width: 400,
     height: 300,
     parent: "game",
     zoom: 4,
@@ -13,7 +13,7 @@ const game = new Phaser.Game({
         default: "arcade",
         arcade: {
             gravity: { y: 300 },
-            debug: true,
+            //ßdebug: true,
         },
     },
     scene: { preload, create, update },
@@ -30,7 +30,6 @@ let exit
 let numberOfCoins = 0
 let score;
 let coin;
-
 
 
 function preload() {
@@ -53,6 +52,7 @@ function preload() {
 }
 
 function create() {
+
     const map = this.make.tilemap({ key: "tilemap" })
     const tileset = map.addTilesetImage('base_tiles', 'base_tiles')
     const tilelayer = map.createLayer('Collide', tileset)
@@ -61,8 +61,8 @@ function create() {
     
     cursors = this.input.keyboard.createCursorKeys();
     shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
-    blueDino = this.physics.add.sprite(180, -50, "idle");
-    capybara = this.physics.add.sprite(380, -50, 'capybara')
+    blueDino = this.physics.add.sprite(90, -50, "idle");
+    capybara = this.physics.add.sprite(1139, -50, 'capybara')
     capybara.setSize(58, 45)
     capybara.setScale(0.3)
     score = this.add.text(0,0, `Coins: 0`, { fontSize: '8px', fill: '#FFFFFF' })
@@ -73,12 +73,15 @@ function create() {
 
     blueDino.setSize(14, 16)
     blueDino.setScale(1);
-    capybara.setCollideWorldBounds(true);
-    blueDino.setCollideWorldBounds(true);
-    coin.setCollideWorldBounds(true)
+    //capybara.setCollideWorldBounds(true);
+    //blueDino.setCollideWorldBounds(true);
+    //coin.setCollideWorldBounds(true)
 
+
+    window.scene = this;
     this.cameras.main.startFollow(blueDino, true, 0.05, 0.05)
 
+    
     this.anims.create({
         key: "idle",
         frameRate: 5,
@@ -150,7 +153,7 @@ function create() {
     })
 
     this.physics.add.collider(blueDino, capybara, function() {
-        blueDino.setX(180);
+        blueDino.setX(90);
         blueDino.setY(70)
     })
 
@@ -164,13 +167,13 @@ let enemytimer = 0
 function update() {
     enemytimer ++;
 
-    if (enemytimer < 180) {
+    if (enemytimer < 95) {
         capybara.setVelocityX(80)
         capybara.flipX = false;
-    } else if (enemytimer < 359) {
+    } else if (enemytimer < 189) {
         capybara.setVelocityX(-80)
         capybara.flipX = true;
-    } else if (enemytimer === 360) {
+    } else if (enemytimer === 190) {
         enemytimer = 0
     }
 
@@ -200,6 +203,14 @@ function update() {
         isMoving = false;
         blueDino.anims.play("idle", true);
         blueDino.setVelocityX(0);
+    }
+
+
+    if(blueDino.y > 180)
+    {
+        console.log(blueDino.y)
+        blueDino.setX(90);
+        blueDino.setY(70)
     }
 
     if (cursors.up.isDown && canJump) {
