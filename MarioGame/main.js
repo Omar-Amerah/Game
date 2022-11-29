@@ -1,3 +1,4 @@
+import { header } from "express-validator";
 import Phaser from "phaser";
 
 const game = new Phaser.Game({
@@ -12,28 +13,33 @@ const game = new Phaser.Game({
         default: "arcade",
         arcade: {
             gravity: { y: 300 },
-            //debug: true,
+            debug: true,
         },
     },
     scene: { preload, create, update },
 });
 
 let blueDino;
-
+let capybara;
 let cursors;
 let isMoving;
 let shiftKey;
 let canJump;
 let deathBlocks
+let exit
 let numberOfCoins = 0
 let score;
 let coin;
 
 
+
 function preload() {
     
     //this.load.image("background", "./assets/back.png");
-    
+    this.load.spritesheet("capybara", "./assets/Capybara.png", {
+        frameWidth: 64,
+        frameHeight: 64 
+    })
     this.load.spritesheet("idlecoin", "./assets/coin.png", {
         frameWidth: 16,
         frameHeight: 16 
@@ -51,19 +57,23 @@ function create() {
     const tileset = map.addTilesetImage('base_tiles', 'base_tiles')
     const tilelayer = map.createLayer('Collide', tileset)
     deathBlocks = map.createLayer('DeathBlocks', tileset)
+    exit = map.createLayer('Exit', tileset)
     
     cursors = this.input.keyboard.createCursorKeys();
     shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     blueDino = this.physics.add.sprite(180, -50, "idle");
-
+    capybara = this.physics.add.sprite(380, -50, 'capybara')
+    capybara.setSize(58, 45)
+    capybara.setScale(0.3)
     score = this.add.text(0,0, `Coins: 0`, { fontSize: '8px', fill: '#FFFFFF' })
-
+    
     coin = this.physics.add.sprite(310, 70, 'idlecoin').setImmovable(true)
     coin.body.setAllowGravity(false);
-    coin.setScale(0.7)
+    coin.setScale(0.6)
 
-    blueDino.setSize(14, 16, true)
+    blueDino.setSize(14, 16)
     blueDino.setScale(1);
+    capybara.setCollideWorldBounds(true);
     blueDino.setCollideWorldBounds(true);
     coin.setCollideWorldBounds(true)
 
@@ -108,13 +118,19 @@ function create() {
         repeat: -1,
         frames: this.anims.generateFrameNumbers("idlecoin", { start: 1, end: 8 }),
     });
+    this.anims.create({
+        key: "capybara",
+        frameRate: 10,
+        repeat: -1,
+        frames: this.anims.generateFrameNumbers("capybara", { start: 72, end: 79 }),
+    });
     
 
     this.physics.add.collider(blueDino, tilelayer , function () {
         canJump = true;
     });
 
-    //this.physics.add.collider(coin, tilelayer)
+    this.physics.add.collider(capybara, tilelayer)
 
     this.physics.add.collider(blueDino, deathBlocks, function() {
         blueDino.setX(180);
@@ -127,34 +143,58 @@ function create() {
         coin.disableBody(true, true)
     })
 
+    this.physics.add.collider(blueDino, exit, function() {
+        if (numberOfCoins === 1) {
+            alert('You Win!!')
+        }
+    })
+
+    this.physics.add.collider(blueDino, capybara, function() {
+        blueDino.setX(180);
+        blueDino.setY(70)
+    })
+
     tilelayer.setCollisionBetween(0,400)
     deathBlocks.setCollisionBetween(0,400)
+    exit.setCollisionBetween(0, 400)
 }
 
 
-
+let enemytimer = 0
 function update() {
+    enemytimer ++;
+
+    if (enemytimer < 180) {
+        capybara.setVelocityX(80)
+        capybara.flipX = false;
+    } else if (enemytimer < 359) {
+        capybara.setVelocityX(-80)
+        capybara.flipX = true;
+    } else if (enemytimer === 360) {
+        enemytimer = 0
+    }
+
 
     score.x = blueDino.body.position.x - 290; 
     score.y = blueDino.body.position.y - 130;
 
     if (shiftKey.isDown && cursors.right.isDown) {
-        blueDino.setVelocityX(200);
+        blueDino.setVelocityX(160);
         blueDino.flipX = false;
         blueDino.anims.play("sprint", true);
     } else if (shiftKey.isDown && cursors.left.isDown) {
-        blueDino.setVelocityX(-200);
+        blueDino.setVelocityX(-160);
         blueDino.flipX = true;
         blueDino.anims.play("sprint", true);
     } else if (cursors.right.isDown) {
         isMoving = true;
         blueDino.flipX = false;
-        blueDino.setVelocityX(120);
+        blueDino.setVelocityX(90);
         blueDino.anims.play("right", true);
     } else if (cursors.left.isDown) {
         isMoving = true;
         blueDino.flipX = true;
-        blueDino.setVelocityX(-120);
+        blueDino.setVelocityX(-90);
         blueDino.anims.play("left", true);
     } else {
         isMoving = false;
@@ -163,13 +203,14 @@ function update() {
     }
 
     if (cursors.up.isDown && canJump) {
-        //jumptime = 0;
+        
         isMoving = true;
         blueDino.anims.play("jump", true);
         blueDino.setVelocityY(-140);
     }
 
     coin.anims.play("coinidle", true)
+    capybara.anims.play("capybara", true)
 
     canJump = false;
 }
