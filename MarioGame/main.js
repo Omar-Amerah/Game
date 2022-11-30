@@ -152,7 +152,7 @@ function create() {
         canJump = true;
     });
 
-    //this.physics.add.collider(capybara, tilelayer)
+    this.physics.add.collider(capybara, tilelayer)
 
     this.physics.add.collider(blueDino, deathBlocks, function() {
         blueDino.setX(180);
