@@ -1,5 +1,7 @@
 import Phaser from "phaser";
 
+
+
 const musicConfig = {
     mute: false,
     volume: 0.2,
@@ -30,15 +32,20 @@ let backgroundMusic
 let jumptimer = 0
 let capybaraflip = 80
 let capybaraStopper
+let endcheck = false
+
+//let levelHandler = new CreateLevels()
 
 
 class Level1 extends Phaser.Scene {
-    
     constructor() {
         super("firstLevel");
-        this.complete1 = false
+        
     }
     preload() {
+        
+
+        this.complete1 = false
         this.load.audio('background', './assets/background.mp3')
         this.load.spritesheet("capybara", "./assets/Capybara.png", {
             frameWidth: 64,
@@ -52,8 +59,8 @@ class Level1 extends Phaser.Scene {
             frameWidth: 24,
             frameHeight: 24,
         });
-        this.load.image("base_tiles", "./assets/adve/tiles.png")
-        this.load.tilemapTiledJSON("tilemap", "./assets/adve/Level1.json")
+        this.load.image("base_tiles", "./assets/level1/tiles.png")
+        this.load.tilemapTiledJSON("tilemap", "./assets/level1/Level1.json")
     }
     
     create() {
@@ -70,7 +77,7 @@ class Level1 extends Phaser.Scene {
         
         cursors = this.input.keyboard.createCursorKeys();
         shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
-        blueDino = this.physics.add.sprite(90, -50, "idle");
+        blueDino = this.physics.add.sprite(1500, -50, "idle");
         capybara = this.physics.add.sprite(1139, 100, 'capybara')
         capybara.setVelocityX(capybaraflip)
 
@@ -192,10 +199,14 @@ class Level1 extends Phaser.Scene {
 
             coin3.disableBody(true, true)
         })
-    
+        const endFunc =  () => {
+            this.scene.start('secondLevel')
+        }
         this.physics.add.collider(blueDino, exit, function() {
-            if (numberOfCoins === 3) {
-                this.complete1 = true
+            
+            if (numberOfCoins === 0) {
+                endcheck = true
+                endFunc()                  
             }
         })
     

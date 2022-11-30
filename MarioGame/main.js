@@ -20,6 +20,8 @@ const game = new Phaser.Game({
     scene: [CreateLevels, Level1, Level2]
 });
 
+export default game
+
 
 
 
