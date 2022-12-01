@@ -13,9 +13,7 @@ const musicConfig = {
 let backgroundMusic
 //sprites
 let blueDino;
-let capybara, capybara2, capybara3, capybara4, capybara5, capybara6,capybara7,capybara8;
-
-                                                           
+let penguin                                                
 let coin1,coin2,coin3, coin4; 
 //keyboard check
 let cursors;
@@ -23,18 +21,12 @@ let shiftKey;
 //tilemap
 let deathBlocks
 let exit
-let capybaraStopper
+let penguinStopper
 //counter
 let staminabar = 600;
 let jumptimer = 0
-let capybaraflip = 80
-let capybaraflip2 = 80
-let capybaraflip3 = 80
-let capybaraflip4 = 80
-let capybaraflip5 = 80
-let capybaraflip6 = 80
-let capybaraflip7 = 80
-let capybaraflip8 = 80
+let penguinFlip = 80
+
 let numberOfCoins = 0
 let numberOfDeaths = localStorage.getItem('Deaths');
 //text
@@ -51,17 +43,17 @@ let chosenthis
 
 
 
-class Level2 extends Phaser.Scene {
+class Level3 extends Phaser.Scene {
     constructor() {
-        super("secondLevel");
+        super("thirdLevel");
         
     }
     preload() {
         //load sprites
         this.load.audio('background', './assets/background.mp3')
-        this.load.spritesheet("capybara", "./assets/Capybara.png", {
-            frameWidth: 64,
-            frameHeight: 64 
+        this.load.spritesheet("penguin", "./assets/level3/penguin.png", {
+            frameWidth: 128,
+            frameHeight: 128 
         })
         this.load.spritesheet("idlecoin", "./assets/coin.png", {
             frameWidth: 16,
@@ -71,8 +63,8 @@ class Level2 extends Phaser.Scene {
             frameWidth: 24,
             frameHeight: 24,
         });
-        this.load.image("base_tiles", "./assets/level2/tiles2.png")
-        this.load.tilemapTiledJSON("tilemap2", "./assets/level2/Level2.json")
+        this.load.image("base_tiles", "./assets/level3/tiles3.png")
+        this.load.tilemapTiledJSON("tilemap3", "./assets/level3/Level3.json")
     }
     
     create() {
@@ -80,80 +72,42 @@ class Level2 extends Phaser.Scene {
         backgroundMusic = this.sound.add('background')
         backgroundMusic.play(musicConfig)
         //tileset
-        const map2 = this.make.tilemap({ key: "tilemap2" })
-        const tileset = map2.addTilesetImage('base_tiles', 'base_tiles')
-        const tilelayer = map2.createLayer('Collide', tileset)
-        const detailLayer= map2.createLayer("Details", tileset)
-        deathBlocks = map2.createLayer('DeathBlocks', tileset)
-        exit = map2.createLayer('Exit', tileset)
-        capybaraStopper = map2.createLayer('CapybaraCharles', tileset)
+        const map3 = this.make.tilemap({ key: "tilemap3" })
+        const tileset = map3.addTilesetImage('base_tiles', 'base_tiles')
+        const tilelayer = map3.createLayer('Collide', tileset)
+        const detailLayer= map3.createLayer("Details", tileset)
+        deathBlocks = map3.createLayer('DeathBlocks', tileset)
+        exit = map3.createLayer('Exit', tileset)
+        penguinStopper = map3.createLayer('PenguinStopper', tileset)
+        // 1, 2, 2, 2, 1, 2, 1
         
         //check
         cursors = this.input.keyboard.createCursorKeys();
         shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
         
         //sprite physics
-        blueDino = this.physics.add.sprite(1700, -50, "idle");
+        blueDino = this.physics.add.sprite(1800, -50, "idle");
+        penguin = this.physics.add.sprite(1600, 90, "penguin")
+        penguin.setScale(0.15)
+        penguin.setSize(120, 80, true)
+        penguin.setVelocityX(penguinFlip)
         blueDino.setSize(14, 16)
         blueDino.setScale(1);
-    if(true){
-        capybara = this.physics.add.sprite(1300, 100, 'capybara')
-        capybara.setVelocityX(capybaraflip)
-        capybara.setSize(58, 45)
-        capybara.setScale(0.3)
-    //215, 184
-        capybara2 = this.physics.add.sprite(215, 184, 'capybara')
-        capybara2.setVelocityX(capybaraflip)
-        capybara2.setSize(58, 45)
-        capybara2.setScale(0.3)
-    //635, 224
-        capybara3 = this.physics.add.sprite(635, 224, 'capybara')
-        capybara3.setVelocityX(capybaraflip)
-        capybara3.setSize(58, 45)
-        capybara3.setScale(0.3)
-    //880, 152
-        capybara4 = this.physics.add.sprite(880, 152, 'capybara')
-        capybara4.setVelocityX(capybaraflip)
-        capybara4.setSize(58, 45)
-        capybara4.setScale(0.3)
-    //1064, 64
-        capybara5 = this.physics.add.sprite(1064, 64, 'capybara')
-        capybara5.setVelocityX(capybaraflip)
-        capybara5.setSize(58, 45)
-        capybara5.setScale(0.3)
-    //1446, 216
-        capybara6 = this.physics.add.sprite(1446, 216, 'capybara')
-        capybara6.setVelocityX(capybaraflip)
-        capybara6.setSize(58, 45)
-        capybara6.setScale(0.3)
-    //1540, 216
-        capybara7 = this.physics.add.sprite(1540, 216, 'capybara')
-        capybara7.setVelocityX(capybaraflip)
-        capybara7.setSize(58, 45)
-        capybara7.setScale(0.3)
-    //1635, 216
-        capybara8 = this.physics.add.sprite(1635, 216, 'capybara')
-        capybara8.setVelocityX(capybaraflip)
-        capybara8.setSize(58, 45)
-        capybara8.setScale(0.3)
-    }
         
 
-        coin1 = this.physics.add.sprite(225, 120, 'idlecoin').setImmovable(true)
+        coin1 = this.physics.add.sprite(725, 210, 'idlecoin').setImmovable(true)
         coin1.body.setAllowGravity(false);
         coin1.setScale(0.6)
     
-        coin2 = this.physics.add.sprite(645, 215, 'idlecoin').setImmovable(true)
+        coin2 = this.physics.add.sprite(1615, 120, 'idlecoin').setImmovable(true)
         coin2.body.setAllowGravity(false);
         coin2.setScale(0.6)
     
-        coin3 = this.physics.add.sprite(1068, 0, 'idlecoin').setImmovable(true)
+        coin3 = this.physics.add.sprite(1250, 155, 'idlecoin').setImmovable(true)
         coin3.body.setAllowGravity(false);
         coin3.setScale(0.6)
 
-        coin4 = this.physics.add.sprite(1550, 100, 'idlecoin').setImmovable(true)
-        coin4.body.setAllowGravity(false);
-        coin4.setScale(0.6)
+
 
         //text
         score = this.add.text(0,0, `Coins: 0`, { fontSize: '8px', fill: '#FFFFFF' })
@@ -206,24 +160,59 @@ class Level2 extends Phaser.Scene {
         });
 
         this.anims.create({
-            key: "capybara",
+            key: "penguin",
             frameRate: 10,
             repeat: -1,
-            frames: this.anims.generateFrameNumbers("capybara", { start: 72, end: 79 }),
+            frames: this.anims.generateFrameNumbers("penguin", { start: 22, end: 23 }),
         });
         
+
+        this.physics.add.collider(penguin, tilelayer)
     
         this.physics.add.collider(blueDino, tilelayer , function () {
             canJump = true;
         });
+
+        this.physics.add.collider(penguin, penguinStopper, function () {
+            if (penguinFlip === 80) {
+                penguin.flipX = false
+                penguin.setVelocityX(penguinFlip)
+                penguinFlip = -80
+            } else {
+                penguin.flipX = true
+                penguin.setVelocityX(penguinFlip)
+                penguinFlip = 80
+            }
+        })
     
         
         
         this.physics.add.collider(blueDino, deathBlocks, function() {
             numberOfDeaths++
             deathText.setText(`Deaths: ${numberOfDeaths}`)
-            blueDino.setX(180);
-            blueDino.setY(70)
+            blueDino.setX(80);
+            blueDino.setY(-50)
+        })
+
+
+        this.physics.add.overlap(blueDino, penguin, function() {
+            
+            if (blueDino.body.velocity.y > 100 || blueDino.body.velocity.y < -100)
+            {
+                penguin.disableBody(true, true)
+                blueDino.setVelocityY(-90)
+            }
+            else
+            {
+                staminatimeout = false
+                timeout = false
+                staminabar = 600;
+                numberOfDeaths++
+                deathText.setText(`Deaths: ${numberOfDeaths}`)
+                blueDino.setX(90);
+                blueDino.setY(70)
+            }
+            
         })
     
         this.physics.add.overlap(blueDino, coin1, function() {
@@ -241,14 +230,10 @@ class Level2 extends Phaser.Scene {
             score.setText(`Coins: ${numberOfCoins}`)
             coin3.disableBody(true, true)
         })
-        this.physics.add.overlap(blueDino, coin4, function() {
-            numberOfCoins++
-            score.setText(`Coins: ${numberOfCoins}`)
-            coin4.disableBody(true, true)
-        })
+
 
         const endFunc =  () => {
-            this.scene.start('thirdLevel')
+            this.scene.start('fourthLevel')
         }
         this.physics.add.collider(blueDino, exit, function() {
             
@@ -258,56 +243,12 @@ class Level2 extends Phaser.Scene {
         })
         
         chosenthis = this
-    function addColliders(varname,capybaraflipper){
-        chosenthis.physics.add.collider(varname, tilelayer)
-        chosenthis.physics.add.collider(capybaraStopper, varname, function()
-        {
-            if(capybaraflipper === 80)
-            {
-                varname.flipX = false
-                varname.setVelocityX(capybaraflipper)
-                capybaraflipper = -80
-            }
-            else
-            {
-                varname.flipX = true
-                varname.setVelocityX(capybaraflipper)
-                capybaraflipper = 80
-            }
-        })
-        chosenthis.physics.add.overlap(blueDino, varname, function() {
-            if (blueDino.body.velocity.y > 100 || blueDino.body.velocity.y < -100)
-            {
-                varname.disableBody(true, true)
-                blueDino.setVelocityY(-90)
-            }
-            else
-            {
-                staminatimeout = false
-                timeout = false
-                staminabar = 600;
-                numberOfDeaths++
-                deathText.setText(`Deaths: ${numberOfDeaths}`)
-                blueDino.setX(90);
-                blueDino.setY(70)
-            }
-        })
-        chosenthis.physics.add.collider(varname, tilelayer)
-    }
-    addColliders(capybara, capybaraflip)
-    addColliders(capybara2, capybaraflip2)
-    addColliders(capybara3, capybaraflip3)
-    addColliders(capybara4, capybaraflip4)
-    addColliders(capybara5, capybaraflip5)
-    addColliders(capybara6, capybaraflip6)
-    addColliders(capybara7, capybaraflip7)
-    addColliders(capybara8, capybaraflip8)
         
     
-        capybaraStopper.setCollisionBetween(0,400)
-        tilelayer.setCollisionBetween(0,400)
-        deathBlocks.setCollisionBetween(0,400)
-        exit.setCollisionBetween(0, 400)
+        penguinStopper.setCollisionBetween(0,4000)
+        tilelayer.setCollisionBetween(0,4000)
+        deathBlocks.setCollisionBetween(0,4000)
+        exit.setCollisionBetween(0, 4000)
     }
     
     update() {
@@ -348,6 +289,7 @@ class Level2 extends Phaser.Scene {
         deathText.y = blueDino.body.position.y -70;
     
         if (shiftKey.isDown && cursors.right.isDown && staminabar > 0 && staminatimeout === false && timeout ===false) {
+            console.log(blueDino.body.position.x, blueDino.body.position.y)
             staminabar = staminabar - 4
             blueDino.setVelocityX(160);
             blueDino.flipX = false;
@@ -369,7 +311,8 @@ class Level2 extends Phaser.Scene {
             blueDino.anims.play("idle", true);
             blueDino.setVelocityX(0);
         }
-        if (cursors.up.isDown && canJump && jumptimer > 30) {
+        //&& canJump && jumptimer > 30
+        if (cursors.up.isDown ) {
             blueDino.anims.play("jump", true);
             blueDino.setVelocityY(-145);
             jumptimer = 0
@@ -389,18 +332,11 @@ class Level2 extends Phaser.Scene {
         coin1.anims.play("coinidle", true)
         coin2.anims.play("coinidle", true)
         coin3.anims.play("coinidle", true)
-        capybara.anims.play("capybara", true)
-        capybara2.anims.play("capybara", true)
-        capybara3.anims.play("capybara", true)
-        capybara4.anims.play("capybara", true)
-        capybara5.anims.play("capybara", true)
-        capybara6.anims.play("capybara", true)
-        capybara7.anims.play("capybara", true)
-        capybara8.anims.play("capybara", true)
+        penguin.anims.play('penguin', true)
     
         canJump = false;
     }
 }
 
 
-export default Level2;
+export default Level3;

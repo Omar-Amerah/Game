@@ -85,7 +85,8 @@ class Level1 extends Phaser.Scene {
         shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
         
         //sprite physics
-        blueDino = this.physics.add.sprite(1500, -50, "idle");
+        blueDino = this.physics.add.sprite(1500, -50, "idle"); 
+        //blueDino = this.physics.add.sprite(90, -50, "idle");
         blueDino.setSize(14, 16)
         blueDino.setScale(1);
 
@@ -220,6 +221,7 @@ class Level1 extends Phaser.Scene {
         this.physics.add.collider(blueDino, exit, function() {
             
             if (numberOfCoins === 0) {
+                localStorage.setItem('Deaths', numberOfDeaths)
                 endFunc()                  
             }
         })
@@ -233,7 +235,10 @@ class Level1 extends Phaser.Scene {
             }
             else
             {
+                staminatimeout = false
+            timeout = false
                 numberOfDeaths++
+                staminabar = 600;
                 deathText.setText(`Deaths: ${numberOfDeaths}`)
                 blueDino.setX(90);
                 blueDino.setY(70)
@@ -283,12 +288,12 @@ class Level1 extends Phaser.Scene {
         deathText.y = blueDino.body.position.y -70;
     
         if (shiftKey.isDown && cursors.right.isDown && staminabar > 0 && staminatimeout === false && timeout ===false) {
-            staminabar = staminabar - 3
+            staminabar = staminabar - 4
             blueDino.setVelocityX(160);
             blueDino.flipX = false;
             blueDino.anims.play("sprint", true);
         } else if (shiftKey.isDown && cursors.left.isDown && staminabar > 0 && staminatimeout === false && timeout ===false) {
-            staminabar = staminabar - 3
+            staminabar = staminabar - 4
             blueDino.setVelocityX(-160);
             blueDino.flipX = true;
             blueDino.anims.play("sprint", true);
@@ -311,8 +316,11 @@ class Level1 extends Phaser.Scene {
         }
         if(blueDino.y > 180)
         {
+            staminatimeout = false
+            timeout = false
             blueDino.setX(90);
             blueDino.setY(70)
+            staminabar = 600;
             numberOfDeaths++
             deathText.setText(`Deaths: ${numberOfDeaths}`)
         }
