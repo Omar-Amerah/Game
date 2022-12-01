@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-let load = 0
 
 class CreateLevels extends Phaser.Scene {
     constructor() {
@@ -8,7 +7,7 @@ class CreateLevels extends Phaser.Scene {
     }
     create() {
 
-        this.scene.start("firstLevel")
+      this.scene.start("firstLevel")
 
     }
 
