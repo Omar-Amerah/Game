@@ -85,8 +85,8 @@ class Level1 extends Phaser.Scene {
         shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
         
         //sprite physics
-        blueDino = this.physics.add.sprite(1500, -50, "idle"); 
-        //blueDino = this.physics.add.sprite(90, -50, "idle");
+        //blueDino = this.physics.add.sprite(1500, -50, "idle"); 
+        blueDino = this.physics.add.sprite(90, -50, "idle");
         blueDino.setSize(14, 16)
         blueDino.setScale(1);
 
@@ -220,7 +220,7 @@ class Level1 extends Phaser.Scene {
         }
         this.physics.add.collider(blueDino, exit, function() {
             
-            if (numberOfCoins === 0) {
+            if (numberOfCoins === 3) {
                 localStorage.setItem('Deaths', numberOfDeaths)
                 endFunc()                  
             }

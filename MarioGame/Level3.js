@@ -50,7 +50,7 @@ class Level3 extends Phaser.Scene {
     }
     preload() {
         //load sprites
-        this.load.audio('background', './assets/background.mp3')
+        
         this.load.spritesheet("penguin", "./assets/level3/penguin.png", {
             frameWidth: 128,
             frameHeight: 128 
@@ -69,8 +69,7 @@ class Level3 extends Phaser.Scene {
     
     create() {
         //music
-        backgroundMusic = this.sound.add('background')
-        backgroundMusic.play(musicConfig)
+        
         //tileset
         const map3 = this.make.tilemap({ key: "tilemap3" })
         const tileset = map3.addTilesetImage('base_tiles', 'base_tiles')
@@ -86,7 +85,7 @@ class Level3 extends Phaser.Scene {
         shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
         
         //sprite physics
-        blueDino = this.physics.add.sprite(1800, -50, "idle");
+        blueDino = this.physics.add.sprite(90, -50, "idle");
         penguin = this.physics.add.sprite(1600, 90, "penguin")
         penguin.setScale(0.15)
         penguin.setSize(120, 80, true)
@@ -237,7 +236,7 @@ class Level3 extends Phaser.Scene {
         }
         this.physics.add.collider(blueDino, exit, function() {
             
-            if (numberOfCoins === 0) {
+            if (numberOfCoins === 3) {
                 endFunc()                  
             }
         })

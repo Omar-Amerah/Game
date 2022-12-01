@@ -19,7 +19,7 @@ const game = new Phaser.Game({
             debug: true,
         },
     },
-    scene: [CreateLevels, Level1, Level2, Level3, Level4],
+    scene: [Level4, Level1, Level2, Level3],
     
 });
 
