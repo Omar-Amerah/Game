@@ -8,7 +8,7 @@ class MainMenu extends Phaser.Scene {
     preload() {}
 
     create() {
-        let gameTitle = this.add.text(40, 70, `I WANT TO DIE`, {
+        let gameTitle = this.add.text(40, 70, `Dino World`, {
             fontSize: "32px",
             fill: "#FFFFFF",
         });

@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 
 
-let numberOfDeaths = localStorage.getItem("Deaths");
+let numberOfDeaths
 
 class EndGame extends Phaser.Scene {
     constructor() {
@@ -9,7 +9,7 @@ class EndGame extends Phaser.Scene {
     }
 
     preload() {
-
+        numberOfDeaths = localStorage.getItem("Deaths");
     }
 
     create() {

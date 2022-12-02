@@ -537,7 +537,7 @@ class Level4 extends Phaser.Scene {
             blueDino.setVelocityX(0);
         }
         //&& canJump && jumptimer > 30
-        if (cursors.up.isDown) {
+        if (cursors.up.isDown&& canJump && jumptimer > 30) {
             blueDino.anims.play("jump", true);
             blueDino.setVelocityY(-145);
             jumptimer = 0;

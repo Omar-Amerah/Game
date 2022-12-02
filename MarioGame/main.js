@@ -19,7 +19,7 @@ const game = new Phaser.Game({
         default: "arcade",
         arcade: {
             gravity: { y: 300 },
-            debug: true,
+            //debug: true,
         },
     },
     scene: [MainMenu, Level1, Level2, Level3, Level4, Level6, EndGame],
