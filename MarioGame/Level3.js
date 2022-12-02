@@ -237,6 +237,7 @@ class Level3 extends Phaser.Scene {
         this.physics.add.collider(blueDino, exit, function() {
             
             if (numberOfCoins === 3) {
+                localStorage.setItem('Deaths', numberOfDeaths)
                 endFunc()                  
             }
         })

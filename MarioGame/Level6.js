@@ -337,6 +337,7 @@ class Level6 extends Phaser.Scene {
 
 
         const endFunc = () => {
+            localStorage.setItem('Deaths', numberOfDeaths)
             this.scene.start("endGame");
         };
         this.physics.add.collider(blueDino, exit, function () {                             

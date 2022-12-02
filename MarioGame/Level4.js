@@ -294,7 +294,7 @@ class Level4 extends Phaser.Scene {
             timeout = false;
             staminabar = 600;
             numberOfDeaths++            
-                deathText.setText(`Deaths: ${numberOfDeaths}`)
+            deathText.setText(`Deaths: ${numberOfDeaths}`)
             blueDino.body.position.x = 90;
             blueDino.body.position.y = 150;
         })
@@ -425,6 +425,7 @@ class Level4 extends Phaser.Scene {
         };
         this.physics.add.collider(blueDino, exit, function () {
             if (numberOfCoins === 3) {
+                localStorage.setItem('Deaths', numberOfDeaths)
                 endFunc();
             }
         });

@@ -216,12 +216,14 @@ class Level1 extends Phaser.Scene {
             coin3.disableBody(true, true)
         })
         const endFunc =  () => {
+            localStorage.setItem('Deaths', numberOfDeaths)
             this.scene.start('secondLevel')
+            
         }
         this.physics.add.collider(blueDino, exit, function() {
             
             if (numberOfCoins === 3) {
-                localStorage.setItem('Deaths', numberOfDeaths)
+                
                 endFunc()                  
             }
         })

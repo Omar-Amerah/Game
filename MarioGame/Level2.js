@@ -75,7 +75,7 @@ class Level2 extends Phaser.Scene {
     
     create() {
         //music
-        
+        console.log(numberOfDeaths)
         //tileset
         const map2 = this.make.tilemap({ key: "tilemap2" })
         const tileset = map2.addTilesetImage('base_tiles', 'base_tiles')
@@ -238,6 +238,7 @@ class Level2 extends Phaser.Scene {
         })
 
         const endFunc =  () => {
+            localStorage.setItem('Deaths', numberOfDeaths)
             this.scene.start('thirdLevel')
         }
         this.physics.add.collider(blueDino, exit, function() {
