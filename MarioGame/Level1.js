@@ -4,15 +4,26 @@ import Phaser from "phaser";
 
 const musicConfig = {
     mute: false,
-    volume: 0.2,
+    volume: 0.02,
     rate: 1,
     detune: 0,
     seek: 0,
     loop: true,
     delay: 0
 }
+
+const coinConfig = {
+    mute: false,
+    volume: 0.3,
+    rate: 1,
+    detune: 0,
+    seek: 0,
+    loop: false,
+    delay: 0
+}
 //music
 let backgroundMusic
+let coinNoise
 //sprites
 let blueDino;
 let capybara;
@@ -39,7 +50,8 @@ let deathText
 let staminatimeout = false; 
 let timeout = false
 let canJump;
-
+let chosenThis
+localStorage.removeItem('Deaths')
 
 
 
@@ -50,6 +62,7 @@ class Level1 extends Phaser.Scene {
     }
     preload() {
         //load sprites
+        this.load.audio('coinNoise', './assets/coinSound.mp3')
         this.load.audio('background', './assets/background.mp3')
         this.load.spritesheet("capybara", "./assets/Capybara.png", {
             frameWidth: 64,
@@ -187,7 +200,7 @@ class Level1 extends Phaser.Scene {
         })
     
 
-
+        chosenThis = this
 
 
         this.physics.add.collider(blueDino, deathBlocks, function() {
@@ -200,19 +213,22 @@ class Level1 extends Phaser.Scene {
         this.physics.add.overlap(blueDino, coin1, function() {
             numberOfCoins++
             score.setText(`Coins: ${numberOfCoins}`)
-
+            coinNoise = chosenThis.sound.add('coinNoise')
+            coinNoise.play(coinConfig)
             coin1.disableBody(true, true)
         })
         this.physics.add.overlap(blueDino, coin2, function() {
             numberOfCoins++
+            coinNoise = chosenThis.sound.add('coinNoise')
+            coinNoise.play(coinConfig)
             score.setText(`Coins: ${numberOfCoins}`)
-
             coin2.disableBody(true, true)
         })
         this.physics.add.overlap(blueDino, coin3, function() {
             numberOfCoins++
             score.setText(`Coins: ${numberOfCoins}`)
-
+            coinNoise = chosenThis.sound.add('coinNoise')
+            coinNoise.play(coinConfig)
             coin3.disableBody(true, true)
         })
         const endFunc =  () => {

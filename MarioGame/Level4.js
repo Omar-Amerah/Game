@@ -9,14 +9,25 @@ const musicConfig = {
     loop: true,
     delay: 0,
 };
+
+const coinConfig = {
+    mute: false,
+    volume: 0.3,
+    rate: 1,
+    detune: 0,
+    seek: 0,
+    loop: false,
+    delay: 0
+}
 //music
 let backgroundMusic;
+let coinNoise
 //sprites
 let blueDino;
 let snake;
 let scorpion, scorpion2, scorpion3
 let vulture, vulture2
-let coin1, coin2, coin3, coin4;
+let coin1, coin2, coin3;
 //keyboard check
 let cursors;
 let shiftKey;
@@ -36,7 +47,7 @@ let vultureFlip2 = 50;
 let tick = 0;
 
 let numberOfCoins = 0;
-let numberOfDeaths = localStorage.getItem("Deaths");
+let numberOfDeaths
 //text
 let score;
 let staminatext;
@@ -46,14 +57,16 @@ let deathText;
 let staminatimeout = false;
 let timeout = false;
 let canJump;
+let chosenThis
 
 class Level4 extends Phaser.Scene {
     constructor() {
         super("fourthLevel");
     }
     preload() {
+        this.load.audio('coinNoise', './assets/coinSound.mp3')
         //load sprites
-
+        numberOfDeaths = localStorage.getItem('Deaths')
         this.load.spritesheet("snake", "./assets/level4/Snake_attack.png", {
             frameWidth: 48,
             frameHeight: 24,
@@ -80,6 +93,7 @@ class Level4 extends Phaser.Scene {
 
     create() {
         //tileset
+        chosenThis = this
         const map4 = this.make.tilemap({ key: "tilemap4" });
         const tileset = map4.addTilesetImage("base_tiles", "base_tiles");
         const tilelayer = map4.createLayer("Collide", tileset);
@@ -406,16 +420,22 @@ class Level4 extends Phaser.Scene {
 
         this.physics.add.overlap(blueDino, coin1, function () {
             numberOfCoins++;
+            coinNoise = chosenThis.sound.add('coinNoise')
+            coinNoise.play(coinConfig)
             score.setText(`Coins: ${numberOfCoins}`);
             coin1.disableBody(true, true);
         });
         this.physics.add.overlap(blueDino, coin2, function () {
             numberOfCoins++;
+            coinNoise = chosenThis.sound.add('coinNoise')
+            coinNoise.play(coinConfig)
             score.setText(`Coins: ${numberOfCoins}`);
             coin2.disableBody(true, true);
         });
         this.physics.add.overlap(blueDino, coin3, function () {
             numberOfCoins++;
+            coinNoise = chosenThis.sound.add('coinNoise')
+            coinNoise.play(coinConfig)
             score.setText(`Coins: ${numberOfCoins}`);
             coin3.disableBody(true, true);
         });

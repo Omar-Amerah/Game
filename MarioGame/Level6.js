@@ -34,8 +34,7 @@ let chickenFlip3 = 50
 let chickenFlip4 = 150
 
 let numberOfCoins = 0;
-let numberOfDeaths = localStorage.getItem("Deaths");
-//text
+let numberOfDeaths
 let bossHealth
 let score;
 let staminatext;
@@ -63,6 +62,7 @@ class Level6 extends Phaser.Scene {
     }
     preload() {
         //load sprites
+        numberOfDeaths = localStorage.getItem('Deaths')
         this.load.spritesheet('littleChicken', './assets/level6/LittleChicken.png', {
             frameWidth: 32, 
             frameHeight: 32

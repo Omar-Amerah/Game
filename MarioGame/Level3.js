@@ -9,8 +9,19 @@ const musicConfig = {
     loop: true,
     delay: 0
 }
+
+const coinConfig = {
+    mute: false,
+    volume: 0.3,
+    rate: 1,
+    detune: 0,
+    seek: 0,
+    loop: false,
+    delay: 0
+}
 //music
 let backgroundMusic
+let coinNoise
 //sprites
 let blueDino;
 let penguin                                                
@@ -28,7 +39,7 @@ let jumptimer = 0
 let penguinFlip = 80
 
 let numberOfCoins = 0
-let numberOfDeaths = localStorage.getItem('Deaths');
+let numberOfDeaths;
 //text
 let score;
 let staminatext;
@@ -38,7 +49,7 @@ let deathText
 let staminatimeout = false; 
 let timeout = false
 let canJump;
-let chosenthis
+let chosenThis
 
 
 
@@ -50,7 +61,8 @@ class Level3 extends Phaser.Scene {
     }
     preload() {
         //load sprites
-        
+        this.load.audio('coinNoise', './assets/coinSound.mp3')
+        numberOfDeaths = localStorage.getItem('Deaths')
         this.load.spritesheet("penguin", "./assets/level3/penguin.png", {
             frameWidth: 128,
             frameHeight: 128 
@@ -69,7 +81,7 @@ class Level3 extends Phaser.Scene {
     
     create() {
         //music
-        
+        chosenThis = this
         //tileset
         const map3 = this.make.tilemap({ key: "tilemap3" })
         const tileset = map3.addTilesetImage('base_tiles', 'base_tiles')
@@ -216,16 +228,22 @@ class Level3 extends Phaser.Scene {
     
         this.physics.add.overlap(blueDino, coin1, function() {
             numberOfCoins++
+            coinNoise = chosenThis.sound.add('coinNoise')
+            coinNoise.play(coinConfig)
             score.setText(`Coins: ${numberOfCoins}`)
             coin1.disableBody(true, true)
         })
         this.physics.add.overlap(blueDino, coin2, function() {
             numberOfCoins++
+            coinNoise = chosenThis.sound.add('coinNoise')
+            coinNoise.play(coinConfig)
             score.setText(`Coins: ${numberOfCoins}`)
             coin2.disableBody(true, true)
         })
         this.physics.add.overlap(blueDino, coin3, function() {
             numberOfCoins++
+            coinNoise = chosenThis.sound.add('coinNoise')
+            coinNoise.play(coinConfig)
             score.setText(`Coins: ${numberOfCoins}`)
             coin3.disableBody(true, true)
         })
@@ -242,7 +260,7 @@ class Level3 extends Phaser.Scene {
             }
         })
         
-        chosenthis = this
+        
         
     
         penguinStopper.setCollisionBetween(0,4000)
