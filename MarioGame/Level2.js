@@ -13,10 +13,8 @@ const musicConfig = {
 let backgroundMusic
 //sprites
 let blueDino;
-let capybara, capybara2, capybara3, capybara4, capybara5, capybara6,capybara7,capybara8;
-
-                                                           
-let coin1,coin2,coin3, coin4; 
+let capybara, capybara2, capybara3, capybara4, capybara5, capybara6,capybara7,capybara8;                                      
+let coin1,coin2,coin3; 
 //keyboard check
 let cursors;
 let shiftKey;
@@ -92,7 +90,7 @@ class Level2 extends Phaser.Scene {
         shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
         
         //sprite physics
-        blueDino = this.physics.add.sprite(90, -50, "idle");
+        blueDino = this.physics.add.sprite(90, 80, "idle");
         blueDino.setSize(14, 16)
         blueDino.setScale(1);
     if(true){
@@ -138,21 +136,19 @@ class Level2 extends Phaser.Scene {
     }
         
 
-        coin1 = this.physics.add.sprite(225, 120, 'idlecoin').setImmovable(true)
+
+    
+        coin1 = this.physics.add.sprite(645, 215, 'idlecoin').setImmovable(true)
         coin1.body.setAllowGravity(false);
         coin1.setScale(0.6)
     
-        coin2 = this.physics.add.sprite(645, 215, 'idlecoin').setImmovable(true)
+        coin2 = this.physics.add.sprite(1068, 0, 'idlecoin').setImmovable(true)
         coin2.body.setAllowGravity(false);
         coin2.setScale(0.6)
-    
-        coin3 = this.physics.add.sprite(1068, 0, 'idlecoin').setImmovable(true)
+
+        coin3 = this.physics.add.sprite(1550, 100, 'idlecoin').setImmovable(true)
         coin3.body.setAllowGravity(false);
         coin3.setScale(0.6)
-
-        coin4 = this.physics.add.sprite(1550, 100, 'idlecoin').setImmovable(true)
-        coin4.body.setAllowGravity(false);
-        coin4.setScale(0.6)
 
         //text
         score = this.add.text(0,0, `Coins: 0`, { fontSize: '8px', fill: '#FFFFFF' })
@@ -221,8 +217,8 @@ class Level2 extends Phaser.Scene {
         this.physics.add.collider(blueDino, deathBlocks, function() {
             numberOfDeaths++
             deathText.setText(`Deaths: ${numberOfDeaths}`)
-            blueDino.setX(180);
-            blueDino.setY(70)
+            blueDino.setX(90);
+            blueDino.setY(80)
         })
     
         this.physics.add.overlap(blueDino, coin1, function() {
@@ -240,18 +236,13 @@ class Level2 extends Phaser.Scene {
             score.setText(`Coins: ${numberOfCoins}`)
             coin3.disableBody(true, true)
         })
-        this.physics.add.overlap(blueDino, coin4, function() {
-            numberOfCoins++
-            score.setText(`Coins: ${numberOfCoins}`)
-            coin4.disableBody(true, true)
-        })
 
         const endFunc =  () => {
             this.scene.start('thirdLevel')
         }
         this.physics.add.collider(blueDino, exit, function() {
             
-            if (numberOfCoins === 4) {
+            if (numberOfCoins === 3) {
                 endFunc()                  
             }
         })
@@ -288,7 +279,7 @@ class Level2 extends Phaser.Scene {
                 numberOfDeaths++
                 deathText.setText(`Deaths: ${numberOfDeaths}`)
                 blueDino.setX(90);
-                blueDino.setY(70)
+                blueDino.setY(80)
             }
         })
         chosenthis.physics.add.collider(varname, tilelayer)
@@ -368,7 +359,7 @@ class Level2 extends Phaser.Scene {
             blueDino.anims.play("idle", true);
             blueDino.setVelocityX(0);
         }
-        if (cursors.up.isDown && canJump && jumptimer > 30) {
+        if (cursors.up.isDown) {
             blueDino.anims.play("jump", true);
             blueDino.setVelocityY(-145);
             jumptimer = 0

@@ -14,7 +14,7 @@ let backgroundMusic
 //sprites
 let blueDino;
 let penguin                                                
-let coin1,coin2,coin3, coin4; 
+let coin1,coin2,coin3; 
 //keyboard check
 let cursors;
 let shiftKey;
@@ -85,7 +85,7 @@ class Level3 extends Phaser.Scene {
         shiftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
         
         //sprite physics
-        blueDino = this.physics.add.sprite(90, -50, "idle");
+        blueDino = this.physics.add.sprite(70, 90, "idle");
         penguin = this.physics.add.sprite(1600, 90, "penguin")
         penguin.setScale(0.15)
         penguin.setSize(120, 80, true)
@@ -111,7 +111,7 @@ class Level3 extends Phaser.Scene {
         //text
         score = this.add.text(0,0, `Coins: 0`, { fontSize: '8px', fill: '#FFFFFF' })
         staminatext = this.add.text(0,0, `Stamina: 100`, { fontSize: '8px', fill: '#FFFFFF' })
-        levelText = this.add.text(0, 0, 'Level: 2', { fontSize: '8px', fill: '#FFFFFF' })
+        levelText = this.add.text(0, 0, 'Level: 3', { fontSize: '8px', fill: '#FFFFFF' })
         deathText = this.add.text(0, 0, `Deaths: ${numberOfDeaths}`, { fontSize: '8px', fill: '#FFFFFF' })
         
         
@@ -189,8 +189,8 @@ class Level3 extends Phaser.Scene {
         this.physics.add.collider(blueDino, deathBlocks, function() {
             numberOfDeaths++
             deathText.setText(`Deaths: ${numberOfDeaths}`)
-            blueDino.setX(80);
-            blueDino.setY(-50)
+            blueDino.setX(70);
+            blueDino.setY(90)
         })
 
 
@@ -208,8 +208,8 @@ class Level3 extends Phaser.Scene {
                 staminabar = 600;
                 numberOfDeaths++
                 deathText.setText(`Deaths: ${numberOfDeaths}`)
-                blueDino.setX(90);
-                blueDino.setY(70)
+                blueDino.setX(70);
+                blueDino.setY(90)
             }
             
         })
@@ -311,7 +311,7 @@ class Level3 extends Phaser.Scene {
             blueDino.setVelocityX(0);
         }
         //&& canJump && jumptimer > 30
-        if (cursors.up.isDown ) {
+        if (cursors.up.isDown) {
             blueDino.anims.play("jump", true);
             blueDino.setVelocityY(-145);
             jumptimer = 0

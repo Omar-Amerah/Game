@@ -113,7 +113,7 @@ class Level5 extends Phaser.Scene {
             fontSize: "8px",
             fill: "#FFFFFF",
         });
-        levelText = this.add.text(0, 0, "Level: 2", {
+        levelText = this.add.text(0, 0, "Level: 5", {
             fontSize: "8px",
             fill: "#FFFFFF",
         });
@@ -293,7 +293,7 @@ class Level5 extends Phaser.Scene {
             blueDino.setVelocityX(0);
         }
         //&& canJump && jumptimer > 30
-        if (cursors.up.isDown && canJump && jumptimer > 30) {
+        if (cursors.up.isDown) {
             blueDino.anims.play("jump", true);
             blueDino.setVelocityY(-145);
             jumptimer = 0;

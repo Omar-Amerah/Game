@@ -86,7 +86,7 @@ class Level1 extends Phaser.Scene {
         
         //sprite physics
         //blueDino = this.physics.add.sprite(1500, -50, "idle"); 
-        blueDino = this.physics.add.sprite(90, -50, "idle");
+        blueDino = this.physics.add.sprite(90, 80, "idle");
         blueDino.setSize(14, 16)
         blueDino.setScale(1);
 
@@ -193,8 +193,8 @@ class Level1 extends Phaser.Scene {
         this.physics.add.collider(blueDino, deathBlocks, function() {
             numberOfDeaths ++
             deathText.setText(`Deaths: ${numberOfDeaths}`)
-            blueDino.setX(180);
-            blueDino.setY(70)
+            blueDino.setX(90);
+            blueDino.setY(80)
         })
     
         this.physics.add.overlap(blueDino, coin1, function() {
@@ -236,12 +236,12 @@ class Level1 extends Phaser.Scene {
             else
             {
                 staminatimeout = false
-            timeout = false
-                numberOfDeaths++
+                timeout = false
                 staminabar = 600;
+                numberOfDeaths++            
                 deathText.setText(`Deaths: ${numberOfDeaths}`)
                 blueDino.setX(90);
-                blueDino.setY(70)
+                blueDino.setY(80)
             }
         })
     

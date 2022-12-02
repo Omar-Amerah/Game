@@ -13,8 +13,8 @@ const musicConfig = {
 let backgroundMusic;
 //sprites
 let blueDino;
-let snake;
-let coin1, coin2, coin3, coin4;
+let chicken, chicken2, chicken3, chicken4
+let chickenBoss
 //keyboard check
 let cursors;
 let shiftKey;
@@ -22,16 +22,21 @@ let shiftKey;
 let deathBlocks;
 let exit;
 let enemyStopper;
+let contain
+let tilelayer
 
 //counter
 let staminabar = 600;
 let jumptimer = 0;
-let penguinFlip = 80;
-let tick = 0;
+let chickenFlip = 100
+let chickenFlip2 = 60
+let chickenFlip3 = 50
+let chickenFlip4 = 150
 
 let numberOfCoins = 0;
 let numberOfDeaths = localStorage.getItem("Deaths");
 //text
+let bossHealth
 let score;
 let staminatext;
 let levelText;
@@ -40,6 +45,17 @@ let deathText;
 let staminatimeout = false;
 let timeout = false;
 let canJump;
+let selectedThis
+let collideradder = true
+let activateboss = false
+let attack = false
+let bosslives = 300
+let tick = 0;
+let bossSpawn = false
+let playerPosX
+let playerPosY
+
+let cold;
 
 class Level6 extends Phaser.Scene {
     constructor() {
@@ -47,6 +63,15 @@ class Level6 extends Phaser.Scene {
     }
     preload() {
         //load sprites
+        this.load.spritesheet('littleChicken', './assets/level6/LittleChicken.png', {
+            frameWidth: 32, 
+            frameHeight: 32
+        })
+
+        this.load.spritesheet('bossBoy', './assets/level6/Bossboy.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        })
         this.load.spritesheet("idlecoin", "./assets/coin.png", {
             frameWidth: 16,
             frameHeight: 16,
@@ -60,11 +85,13 @@ class Level6 extends Phaser.Scene {
     }
 
     create() {
+        selectedThis = this
         //tileset
         const map6 = this.make.tilemap({ key: "tilemap6" });
         const tileset = map6.addTilesetImage("base_tiles", "base_tiles");
-        const tilelayer = map6.createLayer("Collide", tileset);
+        tilelayer = map6.createLayer("Collide", tileset);
         const detailLayer = map6.createLayer("Details", tileset);
+        contain = map6.createLayer('Contain', tileset)
         deathBlocks = map6.createLayer("DeathBlocks", tileset);
         exit = map6.createLayer("Exit", tileset);
         enemyStopper = map6.createLayer("Enemy Stopper", tileset);
@@ -81,38 +108,43 @@ class Level6 extends Phaser.Scene {
         blueDino.setSize(14, 16);
         blueDino.setScale(1);
 
-        coin1 = this.physics.add
-            .sprite(725, 210, "idlecoin")
-            .setImmovable(true);
-        coin1.body.setAllowGravity(false);
-        coin1.setScale(0.6);
+        chicken = this.physics.add.sprite(822, 224, 'littleChicken')
+        chicken.setScale(0.5)
+        chicken.setVelocityX(chickenFlip)
+        chicken.setSize(25, 25)
+        chicken2 = this.physics.add.sprite(958, 224, 'littleChicken')
+        chicken2.setScale(0.5)
+        chicken2.setSize(25, 25)
+        chicken2.setVelocityX(-60)
+        chicken3 = this.physics.add.sprite(1100, 224, 'littleChicken')
+        chicken3.setScale(0.5)
+        chicken3.setSize(25, 25)
+        chicken3.setVelocityX(chickenFlip3)
+        chicken4 = this.physics.add.sprite(1227, 224, 'littleChicken')
+        chicken4.setScale(0.5)
+        chicken4.setSize(20, 20)
+        chicken4.setVelocityX(-150)
+        
+        // chickenBoss = this.physics.add.sprite(1845, 50, 'bossBoy')
+        // chickenBoss.setSize(25, 25)
+        // chickenBoss.setScale(4)
 
-        coin2 = this.physics.add
-            .sprite(1615, 120, "idlecoin")
-            .setImmovable(true);
-        coin2.body.setAllowGravity(false);
-        coin2.setScale(0.6);
-
-        coin3 = this.physics.add
-            .sprite(1250, 155, "idlecoin")
-            .setImmovable(true);
-        coin3.body.setAllowGravity(false);
-        coin3.setScale(0.6);
+        
 
         //text
-        score = this.add.text(0, 0, `Coins: 0`, {
-            fontSize: "8px",
-            fill: "#FFFFFF",
-        });
         staminatext = this.add.text(0, 0, `Stamina: 100`, {
             fontSize: "8px",
             fill: "#FFFFFF",
         });
-        levelText = this.add.text(0, 0, "Level: 2", {
+        levelText = this.add.text(0, 0, "Level: 6", {
             fontSize: "8px",
             fill: "#FFFFFF",
         });
         deathText = this.add.text(0, 0, `Deaths: ${numberOfDeaths}`, {
+            fontSize: "8px",
+            fill: "#FFFFFF",
+        });
+        bossHealth = this.add.text(0, 0,"", {
             fontSize: "8px",
             fill: "#FFFFFF",
         });
@@ -168,62 +200,244 @@ class Level6 extends Phaser.Scene {
             }),
         });
 
+
         this.anims.create({
-            key: "coinidle",
+            key: 'chicken',
+            frameRate: 4,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('littleChicken', {
+                start: 1,
+                end: 4
+            })
+        })
+        
+        this.anims.create({
+            key: 'chickenBossWalk',
             frameRate: 10,
             repeat: -1,
-            frames: this.anims.generateFrameNumbers("idlecoin", {
+            frames: this.anims.generateFrameNumbers('bossBoy', {
                 start: 1,
-                end: 8,
-            }),
-        });
+                end: 8
+            })
+        })
+
+        this.anims.create({
+            key: 'chickenBossSit',
+            frameRate: 10,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('bossBoy', {
+                start: 10,
+                end: 10
+            })
+        })
              
 
         this.physics.add.collider(blueDino, tilelayer, function () {
             canJump = true;
         });
 
-
+        
         this.physics.add.collider(blueDino, deathBlocks, function () {
             numberOfDeaths++;
             deathText.setText(`Deaths: ${numberOfDeaths}`);
-            blueDino.setX(80);
-            blueDino.setY(300);
+            blueDino.setX(90);
+            blueDino.setY(270);
         });
 
-        this.physics.add.overlap(blueDino, coin1, function () {
-            numberOfCoins++;
-            score.setText(`Coins: ${numberOfCoins}`);
-            coin1.disableBody(true, true);
-        });
-        this.physics.add.overlap(blueDino, coin2, function () {
-            numberOfCoins++;
-            score.setText(`Coins: ${numberOfCoins}`);
-            coin2.disableBody(true, true);
-        });
-        this.physics.add.overlap(blueDino, coin3, function () {
-            numberOfCoins++;
-            score.setText(`Coins: ${numberOfCoins}`);
-            coin3.disableBody(true, true);
-        });
+        
+        this.physics.add.overlap(chicken, blueDino, function () {
+            staminatimeout = false;
+            timeout = false;
+            staminabar = 600;
+            numberOfDeaths ++
+            deathText.setText(`Deaths: ${numberOfDeaths}`)
+            blueDino.body.position.x = 90;
+            blueDino.body.position.y = 270;
+        })
+        this.physics.add.overlap(chicken2, blueDino, function () {
+            staminatimeout = false;
+            timeout = false;
+            staminabar = 600;
+            numberOfDeaths ++
+            deathText.setText(`Deaths: ${numberOfDeaths}`)
+            blueDino.body.position.x = 90;
+            blueDino.body.position.y = 270;
+        })
+        this.physics.add.overlap(chicken3, blueDino, function () {
+            staminatimeout = false;
+            timeout = false;
+            staminabar = 600;
+            numberOfDeaths ++
+            deathText.setText(`Deaths: ${numberOfDeaths}`)
+            blueDino.body.position.x = 90;
+            blueDino.body.position.y = 270;
+        })
+        this.physics.add.overlap(chicken4, blueDino, function () {
+            staminatimeout = false;
+            timeout = false;
+            staminabar = 600;
+            numberOfDeaths ++
+            deathText.setText(`Deaths: ${numberOfDeaths}`)
+            blueDino.body.position.x = 90;
+            blueDino.body.position.y = 270;
+        })
+
+        this.physics.add.collider(chicken, tilelayer)
+        this.physics.add.collider(chicken2, tilelayer)
+        this.physics.add.collider(chicken3, tilelayer)
+        this.physics.add.collider(chicken4, tilelayer)
+
+        this.physics.add.collider(chicken, enemyStopper, function () {
+            if (chickenFlip === 100) {
+                chicken.flipX = true
+                chicken.setVelocityX(chickenFlip)
+                chickenFlip = -100
+            } else {
+                chicken.flipX = false
+                chicken.setVelocityX(chickenFlip)
+                chickenFlip = 100
+            }
+        })
+
+        this.physics.add.collider(chicken2, enemyStopper, function () {
+            if (chickenFlip2 === 60) {
+                chicken2.flipX = true
+                chicken2.setVelocityX(chickenFlip2)
+                chickenFlip2 = -60
+            } else {
+                chicken2.flipX = false
+                chicken2.setVelocityX(chickenFlip2)
+                chickenFlip2 = 60
+            }
+        })
+
+        this.physics.add.collider(chicken3, enemyStopper, function () {
+            if (chickenFlip3 === 50) {
+                chicken3.flipX = true
+                chicken3.setVelocityX(chickenFlip3)
+                chickenFlip3 = -50
+            } else {
+                chicken3.flipX = false
+                chicken3.setVelocityX(chickenFlip3)
+                chickenFlip3 = 50
+            }
+        })
+
+        this.physics.add.collider(chicken4, enemyStopper, function () {
+            if (chickenFlip4 === 150) {
+                chicken4.flipX = true
+                chicken4.setVelocityX(chickenFlip4)
+                chickenFlip4 = -150
+            } else {
+                chicken4.flipX = false
+                chicken4.setVelocityX(chickenFlip4)
+                chickenFlip4 = 150
+            }
+        })
+
 
         const endFunc = () => {
-            this.scene.start("fourthLevel");
+            this.scene.start("endGame");
         };
-        this.physics.add.collider(blueDino, exit, function () {
+        this.physics.add.collider(blueDino, exit, function () {                             
             if (numberOfCoins === 0) {
                 endFunc();
             }
         });
 
-        //ENEMY NAME.setCollisionBetween(0,4000)
+        
+
+        
+
+        
         enemyStopper.setCollisionBetween(0, 4000);
         tilelayer.setCollisionBetween(0, 4000);
+        contain.setCollisionBetween(0, 4000);
         deathBlocks.setCollisionBetween(0, 4000);
         exit.setCollisionBetween(0, 4000);
     }
 
     update() {
+        
+
+        if (blueDino.body.position.x > 1440 && collideradder === true) {
+            chickenBoss = selectedThis.physics.add.sprite(1845, 50, 'bossBoy')
+            chickenBoss.setSize(25, 25)
+            chickenBoss.setScale(4)
+            collideradder = false
+            bossSpawn = true
+            cold = selectedThis.physics.add.collider(blueDino, contain)
+            console.log("hello")
+            bossHealth.setText(`Health: 100%`)
+
+            selectedThis.physics.add.collider(tilelayer, chickenBoss)
+            selectedThis.physics.add.collider(contain, chickenBoss)
+
+            selectedThis.physics.add.collider(blueDino, chickenBoss, function(){
+            if(attack === true)
+            {
+                bosslives--
+                bossHealth.setText(`Health: ${((bosslives / 300) * 100).toFixed()}%`)
+                
+            }
+            else{
+                staminatimeout = false;
+                timeout = false;
+                staminabar = 600;
+                blueDino.setX(1450)
+                blueDino.setY(225)
+                chickenBoss.setX(1845)
+                chickenBoss.setY(50)
+                numberOfDeaths ++
+                deathText.setText(`Deaths: ${numberOfDeaths}`)
+            }
+            if(bosslives <= 0){
+                cold.destroy()
+                chickenBoss.disableBody(true, true)
+            }
+        })
+            
+        }
+        if(bossSpawn === true)
+        {
+            tick++
+            if (blueDino.body.position.x > chickenBoss.body.position.x) {
+                chickenBoss.flipX = true
+            } else chickenBoss.flipX = false
+    
+    
+            if(tick === 100)
+            {
+                playerPosX = blueDino.body.position.x
+                playerPosY = blueDino.body.position.y
+                attack = true
+            }
+            else if (tick === 300) {
+                chickenBoss.setVelocityX(playerPosX - chickenBoss.body.position.x) 
+                chickenBoss.setVelocityY(-200)
+                attack = false
+            }
+            else if (tick === 400)
+            {
+                tick = 0 
+                attack = false
+                chickenBoss.setVelocityX(0)
+                chickenBoss.setVelocityY(300)
+                
+            }
+    
+            if (attack) {
+                chickenBoss.anims.play('chickenBossSit', true)
+            } else 
+            {
+                chickenBoss.anims.play('chickenBossWalk',true)
+            }
+    
+        }
+
+        
+
+
         staminatext.setText(`Stamina: ${((staminabar / 600) * 100).toFixed()}`);
         if (staminabar !== 600) {
             staminabar++;
@@ -244,14 +458,15 @@ class Level6 extends Phaser.Scene {
             }
         }
         jumptimer++;
-        score.x = blueDino.body.position.x - 100;
-        score.y = blueDino.body.position.y - 100;
+        
         staminatext.x = blueDino.body.position.x - 100;
-        staminatext.y = blueDino.body.position.y - 90;
+        staminatext.y = blueDino.body.position.y - 100;
         levelText.x = blueDino.body.position.x - 100;
-        levelText.y = blueDino.body.position.y - 80;
+        levelText.y = blueDino.body.position.y - 90;
         deathText.x = blueDino.body.position.x - 100;
-        deathText.y = blueDino.body.position.y - 70;
+        deathText.y = blueDino.body.position.y - 80;
+        bossHealth.x = blueDino.body.position.x - 100;
+        bossHealth.y = blueDino.body.position.y - 70;
 
         if (
             shiftKey.isDown &&
@@ -260,7 +475,6 @@ class Level6 extends Phaser.Scene {
             staminatimeout === false &&
             timeout === false
         ) {
-            console.log(blueDino.body.position.x, blueDino.body.position.y);
             staminabar = staminabar - 4;
             blueDino.setVelocityX(160);
             blueDino.flipX = false;
@@ -288,7 +502,8 @@ class Level6 extends Phaser.Scene {
             blueDino.anims.play("idle", true);
             blueDino.setVelocityX(0);
         }
-        if (cursors.up.isDown && canJump && jumptimer > 30) {
+        // && canJump && jumptimer > 30
+        if (cursors.up.isDown ) {
             blueDino.anims.play("jump", true);
             blueDino.setVelocityY(-145);
             jumptimer = 0;
@@ -303,9 +518,11 @@ class Level6 extends Phaser.Scene {
             blueDino.setY(70);
         }
 
-        coin1.anims.play("coinidle", true);
-        coin2.anims.play("coinidle", true);
-        coin3.anims.play("coinidle", true);
+        chicken.anims.play('chicken', true)
+        chicken2.anims.play('chicken', true)
+        chicken3.anims.play('chicken', true)
+        chicken4.anims.play('chicken', true)
+ 
         canJump = false;
     }
 }

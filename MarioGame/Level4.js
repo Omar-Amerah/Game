@@ -14,6 +14,8 @@ let backgroundMusic;
 //sprites
 let blueDino;
 let snake;
+let scorpion, scorpion2, scorpion3
+let vulture, vulture2
 let coin1, coin2, coin3, coin4;
 //keyboard check
 let cursors;
@@ -26,7 +28,11 @@ let enemyStopper;
 //counter
 let staminabar = 600;
 let jumptimer = 0;
-let penguinFlip = 80;
+let scorpionFlip = 100;
+let scorpionFlip2 = 100;
+let scorpionFlip3 = 100;
+let vultureFlip = 50;
+let vultureFlip2 = 50;
 let tick = 0;
 
 let numberOfCoins = 0;
@@ -52,6 +58,14 @@ class Level4 extends Phaser.Scene {
             frameWidth: 48,
             frameHeight: 24,
         });
+        this.load.spritesheet('scorpion', './assets/level4/Scorpion.png', {
+            frameWidth: 48,
+            frameHeight: 48,
+        })
+        this.load.spritesheet('vulture', './assets/level4/Vulture.png', {
+            frameWidth: 48,
+            frameHeight: 48,
+        })
         this.load.spritesheet("idlecoin", "./assets/coin.png", {
             frameWidth: 16,
             frameHeight: 16,
@@ -75,9 +89,6 @@ class Level4 extends Phaser.Scene {
         enemyStopper = map4.createLayer("enemyStopper", tileset);
         // 1, 2, 2, 2, 1, 2, 1
 
-        //ATTACK DIMENSIONS
-        // snake.body.setOffset(0, 5)
-        // snake.body.setSize(snake.width, snake.height - 5)
 
         //check
         cursors = this.input.keyboard.createCursorKeys();
@@ -86,28 +97,56 @@ class Level4 extends Phaser.Scene {
         );
 
         //sprite physics
-        blueDino = this.physics.add.sprite(80, -50, "idle");
+        blueDino = this.physics.add.sprite(90, 150, "idle");
+        blueDino.setSize(14, 16);
+        blueDino.setScale(1);
+
         snake = this.physics.add.sprite(220, 192, "snake");
         snake.body.setSize(snake.width - 20, snake.height - 5);
         snake.body.setOffset(20, 5);
 
-        blueDino.setSize(14, 16);
-        blueDino.setScale(1);
+        scorpion = this.physics.add.sprite(300, 230, 'scorpion')
+        scorpion.body.setSize(scorpion.width - 5, scorpion.height - 20)
+        scorpion.body.setOffset(10, 20)
+        scorpion.setVelocityX(scorpionFlip)
+        
+        scorpion2 = this.physics.add.sprite(1550, -10, 'scorpion')
+        scorpion2.body.setSize(scorpion.width - 5, scorpion.height - 30)
+        scorpion2.body.setOffset(10, 20)
+        scorpion2.setVelocityX(scorpionFlip2)
+
+        scorpion3 = this.physics.add.sprite(2160, 264, 'scorpion')
+        scorpion3.body.setSize(scorpion.width - 5, scorpion.height - 30)
+        scorpion3.body.setOffset(10, 20)
+        scorpion3.setVelocityX(scorpionFlip3)
+        
+        vulture = this.physics.add.sprite(720,170, 'vulture')
+        vulture.body.setSize(vulture.width - 8, vulture.height - 15)
+        vulture.body.setOffset(10, 10)
+        vulture.body.setAllowGravity(false)
+        vulture.setVelocityX(vultureFlip)
+        
+        vulture2 = this.physics.add.sprite(1800,100, 'vulture')
+        vulture2.body.setSize(vulture2.width - 8, vulture2.height - 15)
+        vulture2.body.setOffset(10, 10)
+        vulture2.body.setAllowGravity(false)
+        vulture2.setVelocityX(vultureFlip2)
+        
 
         coin1 = this.physics.add
-            .sprite(725, 210, "idlecoin")
+            .sprite(810, 110, "idlecoin")
             .setImmovable(true);
         coin1.body.setAllowGravity(false);
         coin1.setScale(0.6);
 
         coin2 = this.physics.add
-            .sprite(1615, 120, "idlecoin")
+            .sprite(1580, -30, "idlecoin")
             .setImmovable(true);
         coin2.body.setAllowGravity(false);
         coin2.setScale(0.6);
-
+//2110, 2255
         coin3 = this.physics.add
-            .sprite(1250, 155, "idlecoin")
+            .sprite(2175, 150, "idlecoin")
             .setImmovable(true);
         coin3.body.setAllowGravity(false);
         coin3.setScale(0.6);
@@ -121,7 +160,7 @@ class Level4 extends Phaser.Scene {
             fontSize: "8px",
             fill: "#FFFFFF",
         });
-        levelText = this.add.text(0, 0, "Level: 2", {
+        levelText = this.add.text(0, 0, "Level: 4", {
             fontSize: "8px",
             fill: "#FFFFFF",
         });
@@ -211,37 +250,158 @@ class Level4 extends Phaser.Scene {
             }),
         });
 
+        this.anims.create({
+            key: 'scorpion',
+            frameRate: 4,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('scorpion', {
+                start: 1,
+                end: 4
+            })
+        })
+        this.anims.create({
+            key: 'vulture',
+            frameRate: 4,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('vulture', {
+                start: 1,
+                end: 4
+            })
+        })
+        
+
         this.physics.add.collider(blueDino, tilelayer, function () {
             canJump = true;
         });
 
-        //this.physics.add.collider(penguin, tilelayer)
-        // this.physics.add.collider(penguin, penguinStopper, function () {
-        //     if (penguinFlip === 80) {
-        //         penguin.flipX = false
-        //         penguin.setVelocityX(penguinFlip)
-        //         penguinFlip = -80
-        //     } else {
-        //         penguin.flipX = true
-        //         penguin.setVelocityX(penguinFlip)
-        //         penguinFlip = 80
-        //     }
-        // })
+        this.physics.add.collider(scorpion, tilelayer)
+        this.physics.add.collider(scorpion, enemyStopper, function () {
+            if (scorpionFlip === 100) {
+                scorpion.body.setOffset(10, 20)
+                scorpion.flipX = true
+                scorpion.setVelocityX(scorpionFlip)
+                scorpionFlip = -100
+            } else {
+                scorpion.body.setOffset(0, 20)
+                scorpion.flipX = false
+                scorpion.setVelocityX(scorpionFlip)
+                scorpionFlip = 100
+            }
+        })
+
+        this.physics.add.overlap(scorpion, blueDino, function () {
+            staminatimeout = false;
+            timeout = false;
+            staminabar = 600;
+            numberOfDeaths++            
+                deathText.setText(`Deaths: ${numberOfDeaths}`)
+            blueDino.body.position.x = 90;
+            blueDino.body.position.y = 150;
+        })
+
+        //////
+        
+        this.physics.add.collider(scorpion2, tilelayer)
+        this.physics.add.collider(scorpion2, enemyStopper, function () {
+            if (scorpionFlip2 === 100) {
+                scorpion2.body.setOffset(10, 30)
+                scorpion2.flipX = true
+                scorpion2.setVelocityX(scorpionFlip2)
+                scorpionFlip2 = -100
+            } else {
+                scorpion2.body.setOffset(0, 30)
+                scorpion2.flipX = false
+                scorpion2.setVelocityX(scorpionFlip2)
+                scorpionFlip2 = 100
+            }
+        })
+
+        this.physics.add.overlap(scorpion2, blueDino, function () {
+            staminatimeout = false;
+            timeout = false;
+            staminabar = 600;
+            numberOfDeaths++            
+                deathText.setText(`Deaths: ${numberOfDeaths}`)
+            blueDino.body.position.x = 90;
+            blueDino.body.position.y = 150;
+        })
+
+        this.physics.add.collider(scorpion3, tilelayer)
+        this.physics.add.collider(scorpion3, enemyStopper, function () {
+            if (scorpionFlip3 === 100) {
+                scorpion3.body.setOffset(10, 30)
+                scorpion3.flipX = true
+                scorpion3.setVelocityX(scorpionFlip3)
+                scorpionFlip3 = -100
+            } else {
+                scorpion3.body.setOffset(0, 30)
+                scorpion3.flipX = false
+                scorpion3.setVelocityX(scorpionFlip3)
+                scorpionFlip3 = 100
+            }
+        })
+
+        this.physics.add.overlap(scorpion2, blueDino, function () {
+            staminatimeout = false;
+            timeout = false;
+            staminabar = 600;
+            numberOfDeaths++            
+            deathText.setText(`Deaths: ${numberOfDeaths}`)
+            blueDino.body.position.x = 90;
+            blueDino.body.position.y = 150;
+        })
 
         this.physics.add.collider(snake, tilelayer);
         this.physics.add.overlap(snake, blueDino, function () {
             staminatimeout = false;
             timeout = false;
             staminabar = 600;
-            blueDino.body.position.x = 80;
-            blueDino.body.position.y = -50;
+            numberOfDeaths++            
+            deathText.setText(`Deaths: ${numberOfDeaths}`)
+            blueDino.body.position.x = 90;
+            blueDino.body.position.y = 150;
         });
+        this.physics.add.collider(vulture, tilelayer);
+        
+        this.physics.add.collider(vulture, enemyStopper, function () {
+            if (vultureFlip === 50) {
+                vulture.flipX = true
+                vulture.setVelocityX(vultureFlip)
+                vultureFlip = -50
+            } else {
+                vulture.flipX = false
+                vulture.setVelocityX(vultureFlip)
+                vultureFlip = 50
+            }
+        })
 
+        this.physics.add.collider(vulture2, tilelayer);
+        
+        this.physics.add.collider(vulture2, enemyStopper, function () {
+            if (vultureFlip2 === 50) {
+                vulture2.flipX = true
+                vulture2.setVelocityX(vultureFlip2)
+                vultureFlip2 = -50
+            } else {
+                vulture2.flipX = false
+                vulture2.setVelocityX(vultureFlip2)
+                vultureFlip2 = 50
+            }
+        })
+        this.physics.add.overlap(blueDino, vulture, function() {
+                blueDino.setVelocityY(-180)
+        })
+
+        this.physics.add.overlap(blueDino, vulture2, function() {
+            blueDino.setVelocityY(-180)
+        })
+            
+        
         this.physics.add.collider(blueDino, deathBlocks, function () {
             numberOfDeaths++;
             deathText.setText(`Deaths: ${numberOfDeaths}`);
-            blueDino.setX(80);
-            blueDino.setY(-50);
+            blueDino.setX(90);
+            blueDino.setY(150);
         });
 
         this.physics.add.overlap(blueDino, coin1, function () {
@@ -261,10 +421,10 @@ class Level4 extends Phaser.Scene {
         });
 
         const endFunc = () => {
-            this.scene.start("fourthLevel");
+            this.scene.start("sixthLevel");
         };
         this.physics.add.collider(blueDino, exit, function () {
-            if (numberOfCoins === 0) {
+            if (numberOfCoins === 3) {
                 endFunc();
             }
         });
@@ -328,7 +488,6 @@ class Level4 extends Phaser.Scene {
             staminatimeout === false &&
             timeout === false
         ) {
-            console.log(blueDino.body.position.x, blueDino.body.position.y);
             staminabar = staminabar - 4;
             blueDino.setVelocityX(160);
             blueDino.flipX = false;
@@ -357,7 +516,7 @@ class Level4 extends Phaser.Scene {
             blueDino.setVelocityX(0);
         }
         //&& canJump && jumptimer > 30
-        if (cursors.up.isDown && canJump && jumptimer > 30) {
+        if (cursors.up.isDown) {
             blueDino.anims.play("jump", true);
             blueDino.setVelocityY(-145);
             jumptimer = 0;
@@ -369,7 +528,7 @@ class Level4 extends Phaser.Scene {
             numberOfDeaths++;
             deathText.setText(`Deaths: ${numberOfDeaths}`);
             blueDino.setX(90);
-            blueDino.setY(70);
+            blueDino.setY(150);
         }
 
         coin1.anims.play("coinidle", true);
@@ -377,6 +536,11 @@ class Level4 extends Phaser.Scene {
         coin3.anims.play("coinidle", true);
 
         canJump = false;
+        vulture.anims.play('vulture', true)
+        vulture2.anims.play('vulture', true)
+        scorpion.anims.play('scorpion', true)
+        scorpion2.anims.play('scorpion', true)
+        scorpion3.anims.play('scorpion', true)
     }
 }
 
